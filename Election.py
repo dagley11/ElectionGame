@@ -103,6 +103,18 @@ class Election:
     def _adjust_player_stance(self):
     	pass
 
+    def _is_slander(self):
+    	pass
+    
+    def _slander_opponent(self):
+    	pass
+
+    def _is_ad(self):
+    	pass
+
+    def _collect_ad_bonus(self):
+    	pass
+
     def listen(self):
     	'''
     	CPU stands by ready to send polls or handle research requests
@@ -120,4 +132,8 @@ class Election:
         		self._handle_research_request()
         	elif self._is_player_adjustment(inp):
         		self._adjust_player_stance()
+        	elif self._is_slander(inp):
+        		self._slander_opponent()
+        	elif self._is_ad(inp):
+        		self._collect_ad_bonus()
         self.server.quit()
