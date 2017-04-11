@@ -9,6 +9,14 @@ def compute_rank(int_list):
     ranks = np.empty(len(int_list), int)
     return np.arange(len(int_list))
 
+def compute_state_score(df, player):
+	raw_score = sum([abs(df[issue] - self.player_info[player][issue]) for issue in ['M','S','FA']])
+	raw_score += df[player + '_slander']
+	raw_score += -df[player + '_ad']
+	if raw_score < 0:
+		raw_score = 0
+	return raw_score
+
 class Election:
 	''' Election keeps a hidden record of states stance on issues, 
 	    handles research requests, and manages polling.
@@ -28,7 +36,7 @@ class Election:
     def _compute_score(self):
     	for player in self.players:
     		self.states_df[player + '_score'] = self.states_df.apply(
-    			lambda x: sum([abs(x[i] - self.player_info[key][i]) for i in ['M','S','FA']])
+    			lambda x: compute_state_score(x, player)
     			)
     	for player in self.players:
     		self.states_df[player + '_rank'] = self.states_df.apply(
@@ -40,7 +48,7 @@ class Election:
     	for player in self.players:
     		self.scores[player] = sum(self.states_df.Votes[self.states_df[player + '_rank'] == 1])
 
-    def self._get_player_info():
+    def _get_player_info():
     	self.player_info = {}
     	for player in range(1,self.num_players):
     		print('PLAYER {}'.format(player))
@@ -104,16 +112,28 @@ class Election:
     	pass
 
     def _is_slander(self):
-    	pass
+    	if inp[0:7]=='slander':
+    		return True
     
     def _slander_opponent(self):
-    	pass
+    	args = inp.split('-')
+    	player = args[1]
+    	ad_spend = args[2]
+    	for i in range(ad_spend):
+    		state = random.choice(self.states_df.state)
+    		self.states_df[player + '_slander'][self.states_df.state == state] += 1
 
-    def _is_ad(self):
-    	pass
+    def _is_ad(self, inp):
+    	if inp[0:2]=='ad':
+    		return True
 
-    def _collect_ad_bonus(self):
-    	pass
+    def _collect_ad_bonus(self, inp):
+    	args = inp.split('-')
+    	player = args[1]
+    	ad_spend = args[2]
+    	for i in range(ad_spend):
+    		state = random.choice(self.states_df.state)
+    		self.states_df[player + '_ad'][self.states_df.state == state] += 1 
 
     def listen(self):
     	'''
@@ -135,5 +155,5 @@ class Election:
         	elif self._is_slander(inp):
         		self._slander_opponent()
         	elif self._is_ad(inp):
-        		self._collect_ad_bonus()
+        		self._collect_ad_bonus(inp)
         self.server.quit()
