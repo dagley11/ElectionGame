@@ -4,20 +4,22 @@ import numpy as np
 import random
 import operator
 
-def compute_rank(int_list):
-	'''Determines rank of list with values, e.g. [9,5,8,2] --> [1,3,2,4]
-	---BROKEN---
-	'''
-	pass
-
-
+def compute_rank(number_list):
+	'''Determines rank of list with values, e.g. [9,5,8,2] --> [1,3,2,4]'''
+    indices = range(len(number_list))
+    indices.sort(key = lambda x: number_list[x])
+    indices.reverse()
+    ranks = [0]*len(indices)
+    for i, x in enumerate(indices, start=1):
+        ranks[x] = i 
+	
 
 class Election:
 	''' Election keeps a hidden record of states stance on issues, 
 		handles research requests, and manages polling.
 	'''
 	def __init__(self, num_players = 4):
-		'''Run when object is created''''
+		'''Run when object is created'''
 		self.num_players = 4
 		self._set_state_stance()
 		self._get_player_info()
